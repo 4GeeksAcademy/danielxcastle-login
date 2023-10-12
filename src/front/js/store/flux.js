@@ -1,3 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
+const baseApiUrl = process.env.BACKEND_URL || "http://127.0.0.1:3001";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -13,14 +17,74 @@ const getState = ({ getStore, getActions, setStore }) => {
 					background: "white",
 					initial: "white"
 				}
-			]
+			],
+			accessToken: undefined,
+			user: undefined
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
+			logIn: async ({email, password}) => {
+				const response = await fetch(
+					`${baseApiUrl}/log-in`, {
+						method: "POST",
+						body: JSON.stringify({
+							email: email,
+							password: password
+						}),
+						headers: {
+							"Content-Type": "application/json"
+						}
+					}
+				)
+				const body = await response.json();
+				if (response.ok) {
+					setStore({
+						accessToken: body.access_token,
+						user: body.user
+					});
+					localStorage.setItem("accessToken", body.access_token);
+					localStorage.setItem("user", body.user);
+					return true
+				}
+			}
+			
+			,
+			logOut: () => {
+				setStore({
+					accessToken: undefined,
+					user: undefined,
+				});
+			
+				localStorage.removeItem("accessToken");
+				localStorage.removeItem("user");
 
+			},
+			signUp: async ({ email, password }) => {
+				const response = await fetch(`${baseApiUrl}/sign-up`, {
+				  method: "POST",
+				  body: JSON.stringify({
+					email: email,
+					password: password,
+				  }),
+				  headers: {
+					"Content-Type": "application/json",
+				  },
+				});
+			  
+				const body = await response.json();
+				if (response.ok) {
+				  setStore({
+					accessToken: body.access_token,
+					user: body.user,
+				  });
+			  
+				  localStorage.setItem("accessToken", body.access_token);
+				  localStorage.setItem("user", JSON.stringify(body.user));
+				}
+			  }
+
+			
+			,
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
