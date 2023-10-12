@@ -23,8 +23,8 @@ def handle_hello():
 @api.route('/log-in', methods=["POST"])
 def check_user_identity():
     body = request.json
-    email = body["email"]
-    password = body["password"]
+    email = body.get("email")
+    password = body.get("password")
     if email is None:
         raise APIException("No email in body, 400")
     if password is None:
@@ -32,8 +32,8 @@ def check_user_identity():
     user = User.query.filter_by(email=email).one_or_none()
     if user is None:
         raise APIException("No user in system, 404")
-    if user.password != password:
-        raise APIException("Wrong password! STAY OUT, 401")
+    if password != user.password:
+        raise APIException(401, "Wrong password! STAY OUT")
     access_token = create_access_token(identity=user.id)
     return jsonify(
         access_token=access_token,
@@ -44,7 +44,7 @@ def check_user_identity():
 def user_sign_up():
     body = request.json
     email = body["email"]
-    password = ["password"]
+    password = body["password"]
     
     if email is None:
         raise APIException("No email in body, 400")

@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
 import "../../styles/home.css";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -18,6 +17,9 @@ export const Home = (props) => {
 		navigate("/profile");
 		}
 	};
+	const onSignup = () => {
+		navigate("/sign-up")
+	}
 
 
 	return (
@@ -26,10 +28,10 @@ export const Home = (props) => {
 			<input className="form-control m-3" type="email" placeholder="email" value={email} onChange={(event) => setEmail(event.target.value)}></input>
 			<input className="form-control m-3" type="password" placeholder="password" value={password} onChange={(event) => setPassword(event.target.value)}></input>
 			<button 
-				className="btn btn-success"
+				className="btn btn-primary m-2"
 				onClick={onSubmit}
 				>log in</button>
-			<a href="/sign-up">Sign up!</a>
+			<button className="btn btn-primary m-2" onClick={onSignup}>Sign Up!</button>
 		</div>
 	);
 };

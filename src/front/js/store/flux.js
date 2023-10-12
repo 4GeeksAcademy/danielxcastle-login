@@ -59,7 +59,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.removeItem("user");
 
 			},
-			signUp: async ({ email, password }) => {
+			signUp: async ({ email,password }) => {
 				const response = await fetch(`${baseApiUrl}/sign-up`, {
 				  method: "POST",
 				  body: JSON.stringify({
